@@ -34,6 +34,7 @@ module.exports = {
     },
     {
       files: ['**/*test.js', '**/__tests__/**', 'scripts/init-test-env.js'],
+      parserOptions: {ecmaVersion: 2017},
       env: {mocha: true},
       rules: {
         'import/first': 'off',

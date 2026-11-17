@@ -30,6 +30,7 @@ var RE_UNITS = /^%MO(IN|MM)/
 // format spec regexp courtesy @summivox
 var RE_FORMAT = /^%FS([LT]?)([AI]?)(.*)X([0-7])([0-7])Y\4\5/
 var RE_POLARITY = /^%LP([CD])/
+var RE_ROTATION = /^%LR([+-]?(?:\d+(?:\.\d*)?|\.\d+))$/
 var RE_STEP_REP = /^%SR(?:X(\d+)Y(\d+)I([\d.]+)J([\d.]+))?/
 var RE_TOOL_DEF = /^%ADD0*(\d{2,})([A-Za-z_$][\w\-.]*)(?:,((?:X?[\d.-]+)*))?/
 var RE_MACRO = /^%AM([A-Za-z_$][\w\-.]*)\*?(.*)/
@@ -203,6 +204,12 @@ var parse = function(parser, block) {
   if (RE_POLARITY.test(block)) {
     var polarity = block.match(RE_POLARITY)[1]
     return parser._push(commands.level('polarity', polarity))
+  }
+
+  if (RE_ROTATION.test(block)) {
+    return parser._push(
+      commands.set('rotation', Number(block.match(RE_ROTATION)[1]))
+    )
   }
 
   if (RE_STEP_REP.test(block)) {

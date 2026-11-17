@@ -29,8 +29,13 @@ var flash = function(coord, tool, region, plotter) {
     plotter.push({type: 'shape', tool: tool.code, shape: tool.pad})
   }
 
-  plotter.push({type: 'pad', tool: tool.code, x: coord[0], y: coord[1]})
-  return boundingBox.translate(tool.box, coord)
+  var pad = {type: 'pad', tool: tool.code, x: coord[0], y: coord[1]}
+  if (plotter._rotation) pad.rotation = plotter._rotation
+  plotter.push(pad)
+  return boundingBox.translate(
+    boundingBox.rotate(tool.box, plotter._rotation),
+    coord
+  )
 }
 
 // given a start, end, direction, arc quadrant mode, and list of potential centers, find the
@@ -350,6 +355,61 @@ var interpolateRect = function(start, end, tool, pathGraph, plotter) {
   )
 }
 
+// Sweeping a convex rectangular aperture along a line produces the convex hull
+// of its corners at the two endpoints. LR rotates the aperture, not the line.
+var interpolateRotatedRect = function(start, end, tool, pathGraph, plotter) {
+  var angle = (plotter._rotation * Math.PI) / 180
+  var cos = Math.cos(angle)
+  var sin = Math.sin(angle)
+  var hw = tool.trace[0] / 2
+  var hh = tool.trace[1] / 2
+  var corners = [
+    [-hw, -hh],
+    [hw, -hh],
+    [hw, hh],
+    [-hw, hh],
+  ]
+  var points = []
+  ;[start, end].forEach(function(center) {
+    corners.forEach(function(point) {
+      points.push([
+        center[0] + point[0] * cos - point[1] * sin,
+        center[1] + point[0] * sin + point[1] * cos,
+      ])
+    })
+  })
+  points.sort(function(a, b) {
+    return a[0] - b[0] || a[1] - b[1]
+  })
+  var cross = function(o, a, b) {
+    return (a[0] - o[0]) * (b[1] - o[1]) - (a[1] - o[1]) * (b[0] - o[0])
+  }
+  var halfHull = function(ordered) {
+    return ordered.reduce(function(hull, point) {
+      while (
+        hull.length >= 2 &&
+        cross(hull[hull.length - 2], hull[hull.length - 1], point) <= 0
+      ) {
+        hull.pop()
+      }
+      hull.push(point)
+      return hull
+    }, [])
+  }
+  var lower = halfHull(points)
+  var upper = halfHull(points.slice().reverse())
+  var hull = lower.slice(0, -1).concat(upper.slice(0, -1))
+  hull.forEach(function(point, i) {
+    pathGraph.add({
+      type: 'line',
+      start: point,
+      end: hull[(i + 1) % hull.length],
+    })
+  })
+  plotter._finishPath()
+  return hull.reduce(boundingBox.addPoint, boundingBox.new())
+}
+
 // interpolate operation
 // returns a bounding box for the operation
 var interpolate = function(
@@ -383,6 +443,9 @@ var interpolate = function(
     }
 
     // else, the tool is a rectangle, which needs a special interpolation function
+    if (plotter._rotation) {
+      return interpolateRotatedRect(start, end, tool, pathGraph, plotter)
+    }
     return interpolateRect(start, end, tool, pathGraph, plotter)
   }
 

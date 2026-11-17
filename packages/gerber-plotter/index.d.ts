@@ -110,6 +110,7 @@ declare namespace gerberPlotter {
 
   interface ChunkPad {
     type: 'pad'
+    rotation?: number
     x: number
     y: number
     tool: ToolId

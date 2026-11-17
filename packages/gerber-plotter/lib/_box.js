@@ -50,6 +50,26 @@ var repeat = function(box, repeat) {
   return add(box, translate(box, repeat))
 }
 
+// A conservative bound for a rotated aperture. Rotating its bounding rectangle
+// also encloses macro primitives, holes, and rounded corners without clipping.
+var rotate = function(box, degrees) {
+  if (!degrees) return box
+  var radians = (degrees * Math.PI) / 180
+  var cos = Math.cos(radians)
+  var sin = Math.sin(radians)
+  return [
+    [box[0], box[1]],
+    [box[2], box[1]],
+    [box[2], box[3]],
+    [box[0], box[3]],
+  ].reduce(function(result, point) {
+    return addPoint(result, [
+      point[0] * cos - point[1] * sin,
+      point[0] * sin + point[1] * cos,
+    ])
+  }, newBox())
+}
+
 module.exports = {
   new: newBox,
   add: add,
@@ -57,4 +77,5 @@ module.exports = {
   addCircle: addCircle,
   translate: translate,
   repeat: repeat,
+  rotate: rotate,
 }

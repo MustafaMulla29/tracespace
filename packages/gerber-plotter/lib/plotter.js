@@ -68,6 +68,7 @@ var Plotter = function(
   this._mode = null
   this._arc = null
   this._region = false
+  this._rotation = 0
   this._path = new PathGraph(this._optimizePaths, this._plotAsOutline)
   this._epsilon = null
   this._lastOp = null
@@ -201,6 +202,9 @@ Plotter.prototype._transform = function(chunk, encoding, done) {
     if (prop === 'region') {
       this._finishPath(value)
       this._region = value
+    } else if (prop === 'rotation') {
+      this._finishPath()
+      this._rotation = ((value % 360) + 360) % 360
     } else if (isFormatKey(prop) && !this._formatLock[prop]) {
       // else we might need to set the format
       this.format[prop] = value

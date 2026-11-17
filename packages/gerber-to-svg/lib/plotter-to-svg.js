@@ -62,7 +62,16 @@ PlotterToSvg.prototype._transform = function(chunk, encoding, done) {
       break
 
     case 'pad':
-      this._draw(flashPad(this.id, chunk.tool, chunk.x, chunk.y, this._element))
+      this._draw(
+        flashPad(
+          this.id,
+          chunk.tool,
+          chunk.x,
+          chunk.y,
+          this._element,
+          chunk.rotation
+        )
+      )
       break
 
     case 'fill':

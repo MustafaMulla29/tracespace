@@ -15,8 +15,8 @@ var xmlElementSpy = sinon.spy(xmlElementString)
 var xidEnsureStub = sinon.stub()
 
 var gerberToSvg = proxyquire('..', {
-  'gerber-parser': parserStub,
-  'gerber-plotter': plotterStub,
+  '../gerber-parser': parserStub,
+  '../gerber-plotter': plotterStub,
   'xml-element-string': xmlElementSpy,
   '@tracespace/xml-id': {ensure: xidEnsureStub},
   './lib/plotter-to-svg': converterStub,
