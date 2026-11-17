@@ -2,8 +2,8 @@
 'use strict'
 
 var xid = require('@tracespace/xml-id')
-var gerberParser = require('../gerber-parser')
-var gerberPlotter = require('../gerber-plotter')
+var gerberParser = require('gerber-parser')
+var gerberPlotter = require('gerber-plotter')
 var xmlElementString = require('xml-element-string')
 
 var PlotterToSvg = require('./lib/plotter-to-svg')

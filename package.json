@@ -1,33 +1,6 @@
 {
   "name": "tracespace",
-  "version": "4.2.8-lr.1",
   "private": true,
-  "main": "packages/gerber-to-svg/index.js",
-  "types": "packages/gerber-to-svg/index.d.ts",
-  "files": [
-    "FORK.md",
-    "packages/gerber-to-svg/*.js",
-    "packages/gerber-to-svg/index.d.ts",
-    "packages/gerber-to-svg/lib",
-    "packages/gerber-parser/*.js",
-    "packages/gerber-parser/index.d.ts",
-    "packages/gerber-parser/lib",
-    "packages/gerber-plotter/*.js",
-    "packages/gerber-plotter/index.d.ts",
-    "packages/gerber-plotter/lib"
-  ],
-  "dependencies": {
-    "@tracespace/xml-id": "^4.2.7",
-    "escape-html": "^1.0.3",
-    "inherits": "^2.0.4",
-    "lodash.fill": "^3.4.0",
-    "lodash.isfinite": "^3.3.2",
-    "lodash.isfunction": "^3.0.9",
-    "lodash.padend": "^4.6.1",
-    "lodash.padstart": "^4.6.1",
-    "readable-stream": "^3.4.0",
-    "xml-element-string": "^1.0.0"
-  },
   "workspaces": [
     "apps/*",
     "config",

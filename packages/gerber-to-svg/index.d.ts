@@ -4,8 +4,8 @@
 
 /// <reference types="node" />
 
-import {Parser, Options as ParserOptions} from '../gerber-parser'
-import {Plotter, Options as PlotterOptions} from '../gerber-plotter'
+import {Parser, Options as ParserOptions} from 'gerber-parser'
+import {Plotter, Options as PlotterOptions} from 'gerber-plotter'
 
 declare function gerberToSvg<NodeType = string>(
   gerber: gerberToSvg.GerberSource,
